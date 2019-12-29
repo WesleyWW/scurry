@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container" id="home">
+        <h1 class="page-header">This is the Profile page</h1>
+        <div class="posts-container">
+            {%  for post in posts %}
+                <article class="article-post shadow">
+                    <div class="post-head">
+                        <img src="{{ url_for('static', filename='images/noprofile.jpg') }}" alt="user photo" class="article-img">
+                        <div class="post-metadata">
+                            <a class="post-author" href="">{{ post.author }}</a>
+                            <small>{{ post.date_posted }}</small>
+                            <p class="btn right">
+                                {{ post.likes }}
+                            </p>
+                        </div>
+                    </div>
+                     
+                    <div class="post-body">
+                        <p class="post-content">{{ post.content }}</p>
+                        <div class="post-buttons">
+                            <a href="" class="btn-link">Update</a>
+                            <a href="" class="btn-link">Delete</a>
+                            <ion-icon class="btn like-btn" name="thumbs-up"></ion-icon>
+                        </div>
+                        <ion-icon class="btn share-btn" name="share-alt"></ion-icon>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-user-info">
+                <img src="{{ url_for('static', filename='images/noprofile.jpg') }}" alt="user photo" class="sidebar-img">
+                <h2>ShoNuff</h2>
+            </div>
+            <div class="post-form">
+                New post form goes here
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block sidebar %}
+    
+{% endblock sidebar %}

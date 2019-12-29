@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <form action="" method="POST" class="form">
+        <!-- csrf token tag -->
+        {{ form.hidden_tag() }}
+        <div class="form-legend">
+            <h1>Login</h1>
+        </div>
+        <div class="form-well">
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-control-label") }}
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn")}}
+            </div>
+        </div>
+        <small>
+            Don't Have An Account Yet? <a href="{{ url_for('register') }}" class="wrong-form">Register Here</a>
+        </small>
+    </form>
+</div>
+{% endblock content %}

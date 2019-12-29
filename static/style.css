@@ -1,0 +1,288 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    --main-color: #054414;
+    --accent-color: #9b8b55;
+}
+
+body {
+    /* background: url('./images/forest.jpeg') no-repeat center; */
+    background-size: cover;
+}
+
+a {
+    text-decoration: none;
+    color: #ffffff;
+    transition: color .4s ease;
+}
+a:hover {
+    color: #ffffff;
+}
+
+.container {
+    margin: auto;
+    padding: .5rem;
+}
+
+.shadow {
+  -webkit-box-shadow: 0px 3px 5px 6px #ccc;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+  -moz-box-shadow:    0px 3px 5px 6px #ccc;  /* Firefox 3.5 - 3.6 */
+  box-shadow:         0px 3px 5px 6px #ccc;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+}
+
+.alert {
+    margin: .5rem auto 1rem auto;
+    max-width: 500px;
+    padding: .5rem;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.alert-success {
+    background: #6af171;
+    color: #013f04;
+}
+
+.alert-danger {
+    background: #f1736a;
+    color: #3f0301;
+}
+
+.alert-info {
+    background: #6ae8f1;
+    color: #01333f;
+}
+
+
+/* HEADER STYLES */
+.header-nav {
+    width: 100%;
+    border-bottom: 2px solid #333;
+    background: var(--accent-color);
+    display: flex;
+}
+
+.header-logo > .logo {
+    max-width: 180px;
+    object-fit: contain;
+}
+
+.nav-list {
+    margin-right: 2rem;
+    list-style: none;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-list-item {
+    margin: .5rem 2rem;
+}
+
+.nav-link {
+    text-transform: uppercase;
+}
+
+.right {
+    margin-left: auto;
+    margin-right: 2rem;
+}
+/* END HEADER */
+
+/* HOME CONTENT BLOCK */
+
+#home {
+    max-width: 1075px;
+    height: 100%;
+    display: grid;
+    grid-template: 
+        'hed hed hed hed'
+        'main main main side'
+        'main main main side'
+        'main main main side';
+    grid-gap: .5rem;
+}
+
+.header {
+    text-align: center;
+    grid-area: hed;
+}
+
+.sidebar {
+    grid-area: side;
+}
+
+.posts-container {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+
+.article-post {
+    width: 100%;
+    margin: 1rem;
+    border-radius: 5px;
+}
+
+.post-head {
+    padding: .5rem;
+    width: 100%;
+    background: var(--main-color);
+    color: var(--accent-color);
+    display: flex;
+    border-radius: 5px;
+}
+
+.post-author {
+    color: #ffffff;
+    margin-right: 1rem;
+}
+.post-author:hover {
+    color: #333;
+}
+
+.post-metadata {
+    margin-left: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.article-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.post-body {
+    padding: 1rem;
+    width: 100%;
+    background: var(--accent-color);
+    color: black;
+    position: relative;
+}
+
+.post-buttons {
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+}
+
+.share-btn {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+}
+
+/* END HOME CONTENT */
+
+/* SIDEBAR */
+.sidebar {
+    width: 100%;
+}
+
+.sidebar-user-info {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+.sidebar-user-info > h2 {
+    margin: 1.3rem 0 0 1.5rem;
+}
+
+.sidebar-img {
+    height: 72px;
+    width: 72px;
+    object-fit: cover;
+}
+
+.post-form {
+    padding: .5rem;
+}
+
+/* END SIDEBAR */
+
+/* FORMS */
+.form {
+    margin: auto;
+    padding: .5rem;
+    width: 100%;
+    max-width: 650px;
+}
+
+.form-legend {
+    padding: 1rem 0;
+    width: 100%;
+    text-align: center;
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+.form-well {
+    padding: .5rem .5rem 3rem .5rem;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient( rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('./images/forest.jpeg') no-repeat center;
+    background-size: cover;
+}
+
+
+.form-group {
+    margin: .5rem auto;
+    width: 80%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--accent-color);
+}
+
+.form-control {
+    height: 2rem;
+    width: 100%;
+}
+
+.form-control-post-textarea {
+    width: 100%;
+    height: 200px;
+}
+
+.form-control-boolean-label {
+    margin-left: 1.5rem;
+}
+
+.form-control-boolean {
+    display: inline;
+    position: absolute;
+}
+
+.invalid-feedback {
+    width: 100%;
+    background: white;
+    color: red;
+}
+
+.post-submit {
+    margin-top: 1rem;
+}
+
+.wrong-form {
+    color: var(--main-color);
+    text-decoration: underline;
+}
+.wrong-form:hover {
+    color: var(--accent-color);
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Title based on title variable from route -->
+    {% if title %}
+        <title>Scurry - {{ title }}</title>
+    {% else %}
+        <title>Scurry - A Place for Squirrels</title>
+    {% endif %}
+</head>
+<body>
+    <header>
+        <nav class="header-nav">
+            <div class="header-logo">
+                <img src="{{ url_for('static', filename='images/scurry-logo.png') }}" alt="Scurry - A Place for Squirrels" class="logo">
+                <!-- <p class="logo-text">Scurry</p> -->
+            </div>
+            <ul class="nav-list">
+                <li class="nav-list-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                </li>
+            </ul>
+            <ul class="nav-list right">
+                {% if user %}
+                <li class="nav-list-item">
+                    <a href="{{ url_for('profile') }}" class="nav-link">Profile</a>
+                </li>
+                <li class="nav-list-item">
+                    <a href="{{ url_for('login') }}" class="nav-link">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-list-item">
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                </li>
+                <li class="nav-list-item">
+                    <a href="{{ url_for('register') }}" class="nav-link">Register</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{category}}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {%  block content %}{% endblock %}
+    {% block sidebar %}{% endblock %}
+
+    <!-- Ion Icons script src -->
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+</html>

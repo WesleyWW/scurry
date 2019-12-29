@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container" id="home">
+        <h1 class="page-header">This is the home page</h1>
+        <div class="posts-container">
+            {%  for post in posts %}
+                <article class="article-post shadow">
+                    <div class="post-head">
+                        <img src="{{ url_for('static', filename='images/noprofile.jpg') }}" alt="user photo" class="article-img">
+                        <div class="post-metadata">
+                            <a class="post-author" href="">{{ post.author }}</a>
+                            <small>{{ post.date_posted }}</small>
+                            <p class="btn right">
+                                {{ post.likes }}
+                            </p>
+                        </div>
+                    </div>
+                     
+                    <div class="post-body">
+                        <p class="post-content">{{ post.content }}</p>
+                        <div class="post-buttons">
+                            <a href="" class="btn-link">Update</a>
+                            <a href="" class="btn-link">Delete</a>
+                            <ion-icon class="btn like-btn" name="thumbs-up"></ion-icon>
+                        </div>
+                        <ion-icon class="btn share-btn" name="share-alt"></ion-icon>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-user-info">
+                <img src="{{ url_for('static', filename='images/noprofile.jpg') }}" alt="user photo" class="sidebar-img">
+                <h2>ShoNuff</h2>
+            </div>
+            <div class="post-form">
+                <form action="" method="POST" class="form">
+                    <!-- csrf token tag -->
+                    {{ form.hidden_tag() }}
+                    <div class="form-legend">
+                        <h1>New Post</h1>
+                    </div>
+                    <div class="form-well">
+                        <div class="form-group">
+                            {{ form.content.label(class="form-control-label") }}
+                            {% if form.content.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.content.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.content(class="form-control-post-textarea") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.public.label(class="form-control-boolean-label") }}
+                            {{ form.public(class="form-control-boolean") }}
+                        </div>
+                        <div class="form-group post-submit">
+                            {{ form.submit(class="btn")}}
+                        </div>
+                    </div>
+                    <small>
+                        Don't Have An Account Yet? <a href="{{ url_for('register') }}" class="wrong-form">Register Here</a>
+                    </small>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
