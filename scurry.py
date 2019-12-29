@@ -1,38 +1,63 @@
+from datetime import datetime
 from flask import Flask, render_template, url_for, flash, redirect
+from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm, PostForm
+
+
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = '2d6d7cc921s64dcdgh8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
 
-posts = [
-    {
-        'author': 'Wesley',
-        'title': 'Post Title 123',
-        'content': 'Post Content 123, The First post',
-        'date_posted': '12-28-19',
-        'likes': '12'
-    },
-    {
-        'author': 'Wesley',
-        'title': 'Post Title 234',
-        'content': 'The Second post, Post Content 234',
-        'date_posted': '12-28-19',
-        'likes': '2'
-    },
-    {
-        'author': 'ShoNuff',
-        'title': 'Post Title 3456',
-        'content': 'Some Random content text for this post',
-        'date_posted': '12-28-19',
-        'likes': '62'
-    }
-]
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='noprofile.jpg')
+    password = db.Column(db.String(60), nullable=False)
+    posts = db.relationship('Post', backref='author', lazy=True)
 
-user = {
-        'username': 'Wesley',
-        'email': 'wesley@gmail.com',
-        'password': '123'
-    }
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"User('{self.content}', '{self.date_posted}')"
+
+# posts = [
+#     {
+#         'author': 'Wesley',
+#         'title': 'Post Title 123',
+#         'content': 'Post Content 123, The First post',
+#         'date_posted': '12-28-19',
+#         'likes': '12'
+#     },
+#     {
+#         'author': 'Wesley',
+#         'title': 'Post Title 234',
+#         'content': 'The Second post, Post Content 234',
+#         'date_posted': '12-28-19',
+#         'likes': '2'
+#     },
+#     {
+#         'author': 'ShoNuff',
+#         'title': 'Post Title 3456',
+#         'content': 'Some Random content text for this post',
+#         'date_posted': '12-28-19',
+#         'likes': '62'
+#     }
+# ]
+
+# user = {
+#         'username': 'Wesley',
+#         'email': 'wesley@gmail.com',
+#         'password': '123'
+#     }
 
 
 
