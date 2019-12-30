@@ -24,23 +24,23 @@
             </div>
             <ul class="nav-list">
                 <li class="nav-list-item">
-                    <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+                    <a href="{{ url_for('main.index') }}" class="nav-link">Home</a>
                 </li>
             </ul>
             <ul class="nav-list right">
                 {% if current_user.is_authenticated %}
                 <li class="nav-list-item">
-                    <a href="{{ url_for('profile') }}" class="nav-link">Profile</a>
+                    <a href="{{ url_for('users.profile') }}" class="nav-link">Profile</a>
                 </li>
                 <li class="nav-list-item">
-                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                    <a href="{{ url_for('users.logout') }}" class="nav-link">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-list-item">
-                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('users.login') }}" class="nav-link">Login</a>
                 </li>
                 <li class="nav-list-item">
-                    <a href="{{ url_for('register') }}" class="nav-link">Register</a>
+                    <a href="{{ url_for('users.register') }}" class="nav-link">Register</a>
                 </li>
                 {% endif %}
             </ul>
