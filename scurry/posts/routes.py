@@ -12,6 +12,17 @@ def new_post():
     form = PostForm()
     return render_template('post.html', title="Create Post", form=form)
 
+@posts.route('/like/<int:post_id>/<action>')  
+def like_action(post_id, action):
+    post = Post.query.filter_by(id=post_id).first_or_404()
+    if action == 'like':
+        current_user.like_post(post)
+        db.session.commit()
+    if action == 'unlike':
+        current_user.unlike_post(post)
+        db.session.commit()
+    return redirect(request.referrer)
+
 
 
 @posts.route('/post/<int:post_id>')
@@ -47,4 +58,5 @@ def delete_post(post_id):
     db.session.commit()
     flash('Post has been Deleted', 'success')
     return redirect(url_for('main.index'))
+
 
