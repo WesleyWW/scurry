@@ -50,5 +50,5 @@ class UpdateAccountForm(FlaskForm):
 
 class PostForm(FlaskForm):
     content = TextAreaField('Content', validators=[DataRequired()])
-    public = BooleanField('Make Public', validators=[DataRequired()])
+    public = BooleanField('Make Public')
     submit = SubmitField('Post')

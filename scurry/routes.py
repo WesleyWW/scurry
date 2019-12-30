@@ -1,36 +1,36 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from scurry import app, db, bcrypt
 from scurry.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from scurry.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
 
-posts = [
-    {
-        'author': 'Wesley',
-        'title': 'Post Title 123',
-        'content': 'Post Content 123, The First post',
-        'date_posted': '12-28-19',
-        'likes': '12'
-    },
-    {
-        'author': 'Wesley',
-        'title': 'Post Title 234',
-        'content': 'The Second post, Post Content 234',
-        'date_posted': '12-28-19',
-        'likes': '2'
-    },
-    {
-        'author': 'ShoNuff',
-        'title': 'Post Title 3456',
-        'content': 'Some Random content text for this post',
-        'date_posted': '12-28-19',
-        'likes': '62'
-    }
-]
+# posts = [
+#     {
+#         'author': 'Wesley',
+#         'title': 'Post Title 123',
+#         'content': 'Post Content 123, The First post',
+#         'date_posted': '12-28-19',
+#         'likes': '12'
+#     },
+#     {
+#         'author': 'Wesley',
+#         'title': 'Post Title 234',
+#         'content': 'The Second post, Post Content 234',
+#         'date_posted': '12-28-19',
+#         'likes': '2'
+#     },
+#     {
+#         'author': 'ShoNuff',
+#         'title': 'Post Title 3456',
+#         'content': 'Some Random content text for this post',
+#         'date_posted': '12-28-19',
+#         'likes': '62'
+#     }
+# ]
 
 # user = {
 #         'username': 'Wesley',
@@ -44,6 +44,7 @@ posts = [
 @app.route('/home')
 def index():
     form = PostForm()
+    posts = Post.query.all()
     return render_template('home.html', title='Home', posts=posts, form=form)
 
 
@@ -87,7 +88,7 @@ def logout():
 @app.route('/post', methods=['GET', 'POST'])
 def new_post():
     form = PostForm()
-    return render_template('create_post.html', title="Create Post", form=form)
+    return render_template('post.html', title="Create Post", form=form)
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -101,6 +102,40 @@ def save_picture(form_picture):
     i.save(picture_path)
     
     return picture_fn
+
+@app.route('/post/<int:post_id>')
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title=post.title, post=post)
+
+@app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.content = form.content.data
+        db.session.commit()
+        flash('Post has been updated', 'success')
+        return redirect(url_for('index'))
+    elif request.method == 'GET':
+        form.content.data = post.content
+    return render_template('post.html', title='Update post', 
+                            form=form)
+
+
+@app.route('/post/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Post has been Deleted', 'success')
+    return redirect(url_for('index'))
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -119,6 +154,12 @@ def profile():
         accountForm.username.data = current_user.username
         accountForm.email.data = current_user.email
     postForm = PostForm()
+    if postForm.validate_on_submit():
+        post = Post(content=postForm.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Post Created!', 'success')
+        return redirect(url_for('index'))
     image_file = url_for('static', filename='images/' + current_user.image_file)
     return render_template('profile.html', title="Profile", 
                             userForm=accountForm, postForm=postForm,
