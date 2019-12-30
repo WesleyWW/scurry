@@ -1,7 +1,8 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from scurry import app, db, bcrypt
 from scurry.forms import RegistrationForm, LoginForm, PostForm
 from scurry.models import User, Post
+from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [
     {
@@ -27,11 +28,11 @@ posts = [
     }
 ]
 
-user = {
-        'username': 'Wesley',
-        'email': 'wesley@gmail.com',
-        'password': '123'
-    }
+# user = {
+#         'username': 'Wesley',
+#         'email': 'wesley@gmail.com',
+#         'password': '123'
+#     }
 
 
 
@@ -39,11 +40,13 @@ user = {
 @app.route('/home')
 def index():
     form = PostForm()
-    return render_template('home.html', title='Home', posts=posts, user=user, form=form)
+    return render_template('home.html', title='Home', posts=posts, form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -59,20 +62,30 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'wes@gmail.com' and form.password.data == '123':
-            flash(f'Logged in successfully!', 'success')
-            return redirect(url_for('profile'))
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
-            flash(f'Login Unsuccessful. Please check credentials', 'danger')
+            flash('Login Unsuccessful, please check credentials', 'danger')
     return render_template('login.html', title="Login", form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route('/post', methods=['GET', 'POST'])
 def new_post():
     form = PostForm()
     return render_template('create_post.html', title="Create Post", form=form)
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
-    return render_template('profile.html', title="Profile", user=user, posts=posts)
+    return render_template('profile.html', title="Profile", user=current_user, posts=posts)

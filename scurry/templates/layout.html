@@ -28,12 +28,12 @@
                 </li>
             </ul>
             <ul class="nav-list right">
-                {% if user %}
+                {% if current_user.is_authenticated %}
                 <li class="nav-list-item">
                     <a href="{{ url_for('profile') }}" class="nav-link">Profile</a>
                 </li>
                 <li class="nav-list-item">
-                    <a href="{{ url_for('login') }}" class="nav-link">Logout</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-list-item">
