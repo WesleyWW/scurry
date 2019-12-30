@@ -1,8 +1,12 @@
+import os
+import secrets
+from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
 from scurry import app, db, bcrypt
-from scurry.forms import RegistrationForm, LoginForm, PostForm
+from scurry.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from scurry.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
+
 
 posts = [
     {
@@ -85,7 +89,37 @@ def new_post():
     form = PostForm()
     return render_template('create_post.html', title="Create Post", form=form)
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/images', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+    
+    return picture_fn
+
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html', title="Profile", user=current_user, posts=posts)
+    accountForm = UpdateAccountForm()
+    if accountForm.validate_on_submit():
+        if accountForm.picture.data:
+            picture_file = save_picture(accountForm.picture.data)
+            current_user.image_file = picture_file
+        current_user.username = accountForm.username.data
+        current_user.email = accountForm.email.data
+        db.session.commit()
+        flash('Account has been updated!', 'success')
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        accountForm.username.data = current_user.username
+        accountForm.email.data = current_user.email
+    postForm = PostForm()
+    image_file = url_for('static', filename='images/' + current_user.image_file)
+    return render_template('profile.html', title="Profile", 
+                            userForm=accountForm, postForm=postForm,
+                            image_file=image_file)

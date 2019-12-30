@@ -1,46 +1,95 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="container" id="home">
+    <div class="container" id="profile">
         <h1 class="page-header">This is the Profile page</h1>
-        <div class="posts-container">
-            {%  for post in posts %}
-                <article class="article-post shadow">
-                    <div class="post-head">
-                        <img src="{{ url_for('static', filename='images/noprofile.jpg') }}" alt="user photo" class="article-img">
-                        <div class="post-metadata">
-                            <a class="post-author" href="">{{ post.author }}</a>
-                            <small>{{ post.date_posted }}</small>
-                            <p class="btn right">
-                                {{ post.likes }}
-                            </p>
-                        </div>
+        <div class="form">
+            <form action="" method="POST" enctype="multipart/form-data">
+                <!-- csrf token tag -->
+                {{ userForm.hidden_tag() }}
+                <fieldset class="form-group">
+                    <div class="legend">
+                        Account Info
                     </div>
-                     
-                    <div class="post-body">
-                        <p class="post-content">{{ post.content }}</p>
-                        <div class="post-buttons">
-                            <a href="" class="btn-link">Update</a>
-                            <a href="" class="btn-link">Delete</a>
-                            <ion-icon class="btn like-btn" name="thumbs-up"></ion-icon>
-                        </div>
-                        <ion-icon class="btn share-btn" name="share-alt"></ion-icon>
-                    </div>
-                </article>
-            {% endfor %}
-        </div>
-        <div class="sidebar">
-            <div class="sidebar-user-info">
-                <img src="{{ url_for('static', filename='images/noprofile.jpg') }}" alt="user photo" class="sidebar-img">
-                <h2>ShoNuff</h2>
-            </div>
-            <div class="post-form">
-                New post form goes here
+                    <div class="form-group">
+                        {{ userForm.username.label(class="form-control-label") }}
 
-            </div>
+                        {% if userForm.username.errors %}
+                            {{ userForm.username(class="form-control")}}
+                            <div class="invalid-feedback">
+                                {% for error in userForm.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ userForm.username(class="form-control") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ userForm.email.label(class="form-control-label") }}
+                        {% if userForm.email.errors %}
+                            {{ userForm.email(class="form-control")}}
+                            <div class="invalid-feedback">
+                                {% for error in userForm.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ userForm.email(class="form-control") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ userForm.picture.label() }}
+                        {{ userForm.picture(class="form-control-file") }}
+                        {% if userForm.picture.errors %}
+                            {% for error in userForm.picture.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        {%  endif %}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ userForm.submit(class="btn btn-info")}}
+                </div>
+            </form>
         </div>
     </div>
 {% endblock content %}
-
 {% block sidebar %}
-    
+    <div class="sidebar">
+        <div class="sidebar-user-info">
+            <img src="{{ image_file }}" alt="user photo" class="sidebar-img">
+            <h2>{{ current_user.username }}</h2>
+            <p>{{ current_user.email }}</p>
+        </div>
+        <div class="post-form">
+            <form action="" method="POST" class="form">
+                <!-- csrf token tag -->
+                {{ postForm.hidden_tag() }}
+                <div class="form-legend">
+                    <h1>New Post</h1>
+                </div>
+                <div class="form-well">
+                    <div class="form-group">
+                        {{ postForm.content.label(class="form-control-label") }}
+                        {% if postForm.content.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in postForm.content.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ postForm.content(class="form-control-post-textarea") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ postForm.public.label(class="form-control-boolean-label") }}
+                        {{ postForm.public(class="form-control-boolean") }}
+                    </div>
+                    <div class="form-group post-submit">
+                        {{ postForm.submit(class="btn")}}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock sidebar %}
