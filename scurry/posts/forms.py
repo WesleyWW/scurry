@@ -4,5 +4,5 @@ from wtforms.validators import DataRequired
 
 class PostForm(FlaskForm):
     content = TextAreaField('Content', validators=[DataRequired()])
-    public = BooleanField('Make Public')
-    submit = SubmitField('Post')
+    private = BooleanField('Make Private')
+    submit = SubmitField('Post') 

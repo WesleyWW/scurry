@@ -10,6 +10,6 @@ main = Blueprint('main', __name__)
 def index():
     form = PostForm()
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = Post.query.filter_by(private=False).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('home.html', title='Home', posts=posts, form=form)
 

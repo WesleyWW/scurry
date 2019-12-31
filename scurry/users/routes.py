@@ -8,7 +8,7 @@ from scurry.posts.forms import PostForm
 
 users = Blueprint('users', __name__)
 
-
+ 
 @users.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -74,7 +74,7 @@ def profile():
         accountForm.email.data = current_user.email
     postForm = PostForm()
     if postForm.validate_on_submit():
-        post = Post(content=postForm.content.data, author=current_user)
+        post = Post(private=postForm.private.data, content=postForm.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Post Created!', 'success')
@@ -83,3 +83,4 @@ def profile():
     return render_template('profile.html', title="Profile", 
                             userForm=accountForm, postForm=postForm,
                             image_file=image_file)
+ 
