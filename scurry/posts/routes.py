@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from scurry import db
-from scurry.models import Post
+from scurry.models import Post, User
 from scurry.posts.forms import PostForm
 
 posts = Blueprint('posts', __name__)
@@ -11,6 +11,21 @@ posts = Blueprint('posts', __name__)
 def new_post():
     form = PostForm()
     return render_template('post.html', title="Create Post", form=form)
+
+@posts.route('/underground', methods=['GET', 'POST'])
+@login_required
+def underground():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(private=True).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    return render_template('underground.html', title="Underground Feed", posts=posts)
+
+@posts.route('/burrow', methods=['GET', 'POST'])
+@login_required
+def burrow():
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    return render_template('burrow.html', title="My Burrow", posts=posts)
 
 @posts.route('/like/<int:post_id>/<action>')  
 def like_action(post_id, action):
