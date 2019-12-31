@@ -2,7 +2,7 @@
 {% block content %}
     <div class="container" id="home">
         <h1 class="page-header">My Burrow</h1>
-        <p>These are the posts you have shared</p>
+        <p class="page-header">These are the posts you have shared</p class="page-header">
         <div class="posts-container">
             {%  for post in posts.items %}
                 <article class="article-post shadow">
@@ -12,8 +12,10 @@
                             <a class="post-author" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
                             <small>{{ post.date_posted }}</small>
                             <p class="btn right">
+                                <a href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}" ><ion-icon name="thumbs-up"></ion-icon></a>
                                 {{ post.likes.count() }}
                             </p>
+                            <ion-icon class="btn share-btn right" name="share-alt"></ion-icon>
                         </div>
                     </div>
                      
@@ -21,12 +23,10 @@
                         <p class="post-content">{{ post.content }}</p>
                         <div class="post-buttons">
                             {% if current_user.username == post.author.username %}
-                                <a href="{{ url_for('posts.update_post', post_id=post.id) }}" class="btn-link">Update</a>
-                                <a href="{{ url_for('posts.delete_post', post_id=post.id) }}" class="btn-link">Delete</a>
+                                <a href="{{ url_for('posts.update_post', post_id=post.id) }}" class="btn">Update</a>
+                                <a href="{{ url_for('posts.delete_post', post_id=post.id) }}" class="btn">Delete</a>
                             {% endif %}
-                            <a href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}" class="btn like-btn"><ion-icon name="thumbs-up"></ion-icon></a>
                         </div>
-                        <ion-icon class="btn share-btn" name="share-alt"></ion-icon>
                     </div>
                 </article>
             {% endfor %}
@@ -40,14 +40,6 @@
                 {% endfor %}
             </div>
             
-        </div>
-        <div class="sidebar">
-            <div class="sidebar-user-info">
-                <img src="{{ url_for('static', filename='images/' + current_user.image_file) }}" alt="user photo" class="sidebar-img">
-                <h2>{{ current_user.username }}</h2>
-            </div>
-
-            </div>
         </div>
     </div>
 {% endblock content %}

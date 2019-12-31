@@ -24,11 +24,17 @@
             </div>
             <ul class="nav-list">
                 <li class="nav-list-item">
-                    <a href="{{ url_for('main.index') }}" class="nav-link">Home</a>
+                    <a href="{{ url_for('main.index') }}" class="nav-link">Above Ground Feed</a>
                 </li>
             </ul>
             <ul class="nav-list right">
                 {% if current_user.is_authenticated %}
+                <li class="nav-list-item">
+                    <a href="{{ url_for('posts.underground') }}" class="nav-link">Underground Feed</a>
+                </li>
+                <li class="nav-list-item">
+                    <a href="{{ url_for('posts.burrow') }}" class="nav-link">My Burrow</a>
+                </li>
                 <li class="nav-list-item">
                     <a href="{{ url_for('users.profile') }}" class="nav-link">Profile</a>
                 </li>
@@ -55,8 +61,50 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    {%  block content %}{% endblock %}
-    {% block sidebar %}{% endblock %}
+    <main id="main">
+        <div class="content-container" id="main-block">
+            {%  block content %}{% endblock %}
+        </div>
+        <div class="sidebar-container" id="sidebar-block">
+        {% if current_user.is_authenticated %}
+            <div class="home-sidebar-user-info">
+                <img src="{{ url_for('static', filename='images/' + current_user.image_file) }}" alt="user photo" class="sidebar-img">
+                <h2>{{ current_user.username }}</h2>
+            </div>
+            <div class="post-form">
+                <form action="" method="POST" class="form">
+                    <!-- csrf token tag -->
+                    {{ postForm.hidden_tag() }}
+                    <div class="form-legend">
+                        <h1>New Post</h1>
+                    </div>
+                    <div class="form-well">
+                        <div class="form-group">
+                            {{ postForm.content.label(class="form-control-label") }}
+                            {% if postForm.content.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in postForm.content.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ postForm.content(class="form-control-post-textarea") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ postForm.private.label(class="form-control-boolean-label") }}
+                            {{ postForm.private(class="form-control-boolean") }}
+                        </div>
+                        <div class="form-group post-submit">
+                            {{ postForm.submit(class="btn")}}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+            {% block sidebar %}{% endblock %}
+        </div>
+    </main>
 
     <!-- Ion Icons script src -->
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>

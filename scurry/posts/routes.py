@@ -15,17 +15,19 @@ def new_post():
 @posts.route('/underground', methods=['GET', 'POST'])
 @login_required
 def underground():
+    postForm = PostForm()
     page = request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(private=True).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('underground.html', title="Underground Feed", posts=posts)
+    return render_template('underground.html', title="Underground Feed", postForm=postForm, posts=posts)
 
 @posts.route('/burrow', methods=['GET', 'POST'])
 @login_required
 def burrow():
+    postForm = PostForm()
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=current_user.username).first_or_404()
     posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('burrow.html', title="My Burrow", posts=posts)
+    return render_template('burrow.html', postForm=postForm, title="My Burrow", posts=posts)
 
 @posts.route('/like/<int:post_id>/<action>')  
 def like_action(post_id, action):
