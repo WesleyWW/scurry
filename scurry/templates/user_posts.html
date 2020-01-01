@@ -2,6 +2,7 @@
 {% block content %}
 <div class="container">
     <h1>{{ user.username }}'s Posts</h1><h2>{{ posts.total }}</h2>
+    <a href="{{ url_for('users.follow_action', username=user.username, action='follow')}}" class="btn">Follow {{ user.followers.count() }}</a>
     <div class="posts-container">
         {%  for post in posts.items %}
             <article class="article-post shadow">

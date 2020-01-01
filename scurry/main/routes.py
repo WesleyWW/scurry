@@ -16,7 +16,6 @@ def index():
         db.session.add(post)
         db.session.commit()
         flash('Post Created!', 'success')
-        return redirect(request.referrer)
     
     user = User.query.filter_by(username=current_user.username).first_or_404()
     page = request.args.get('page', 1, type=int)

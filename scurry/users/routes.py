@@ -57,6 +57,19 @@ def user_posts(username):
         .paginate(page=page, per_page=5)
     return render_template('user_posts.html', postForm=postForm, posts=posts, user=user)
 
+# Follow User
+@users.route('/user/<string:username>/<action>')
+def follow_action(username, action):
+    user = User.query.filter_by(username=username).first_or_404()
+    if action == 'follow':
+        current_user.follow(user)
+        db.session.commit()
+    if action == 'unfollow':
+        current_user.unfollow(user)
+        db.session.commit()
+    return redirect(request.referrer)
+
+
 @users.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
