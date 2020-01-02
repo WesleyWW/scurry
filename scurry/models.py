@@ -25,6 +25,18 @@ class User(db.Model, UserMixin):
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
+
+    def share_post(self, post):
+        if not self.has_shared_post(post):
+            share = PostShare(sharer_id=self.id, shared_post_id=post.id)
+            db.session.add(share)
+            db.session.commit()
+
+    def has_shared_post(self, post):
+        return PostShare.query.filter(
+            PostShare.sharer_id == self.id,
+            PostShare.shared_post_id == post.id).count() > 0
+
     def followed_posts(self):
         followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
@@ -49,6 +61,15 @@ class User(db.Model, UserMixin):
         foreign_keys='PostLike.user_id',
         backref='user', lazy='dynamic')
 
+    shared = db.relationship(
+        'PostShare',
+        foreign_keys='PostShare.sharer_id',
+        backref='sharer', lazy='dynamic')
+
+    def share_post(self, post):
+        share = PostShare(sharer_id=self.id, shared_post_id=post.id)
+        db.session.add(share)
+
     def like_post(self, post):
         if not self.has_liked_post(post):
             like = PostLike(user_id=self.id, post_id=post.id)
@@ -68,6 +89,12 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
+class PostShare(db.Model):
+    __tablename__='post_share'
+    id = db.Column(db.Integer, primary_key=True)
+    sharer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    shared_post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
 class PostLike(db.Model):
     __tablename__='post_like'
     id = db.Column(db.Integer, primary_key=True)
@@ -81,6 +108,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     private = db.Column(db.Boolean, default=False, nullable=False)
     likes = db.relationship('PostLike', backref='post', lazy='dynamic')
+    shares = db.relationship('PostShare', foreign_keys='PostShare.shared_post_id', backref='post', lazy='dynamic')
 
     def __repr__(self):
         return f"User('{self.content}', '{self.private}','{self.likes}', '{self.date_posted}')"
