@@ -20,6 +20,7 @@
                     </div>
                      
                     <div class="post-body">
+                        {{ post.id }}
                         <p class="post-content">{{ post.content }}</p>
                         {% for share in post.shares %}
                             {{ share.sharer.username }}

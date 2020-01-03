@@ -1,5 +1,6 @@
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
+from sqlalchemy import or_
 from flask_login import current_user, login_required
 from scurry import db
 from scurry.models import Post, User, PostShare
@@ -29,7 +30,9 @@ def underground():
         flash('Post Created!', 'success')
         return redirect(request.referrer)
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(private=True).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    shared_posts = Post.query.filter(Post.shares) #.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    private_posts = Post.query.filter_by(private=True)
+    posts = shared_posts.union(private_posts).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('underground.html', title="Underground Feed", postForm=postForm, posts=posts)
 
 @posts.route('/burrow', methods=['GET', 'POST'])
@@ -65,7 +68,7 @@ def share_post(post_id):
         abort(404)
     # new_post = Post(private=True, author=post.author, content=post.content)
     current_user.share_post(post)
-    db.session.add(post)
+    # db.session.add(post)
     db.session.commit()
     flash('Post has been shared', 'success')
     return redirect(url_for('posts.underground'))
