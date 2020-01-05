@@ -1,1 +1,1 @@
-web: flask db upgrade; flask translate compile; gunicorn scurry:app
+web: flask db upgrade; flask translate compile; gunicorn python-scurry:app
