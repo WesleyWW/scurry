@@ -1,5 +1,5 @@
 import logging
-from loggin.handers import RotatingFileHandler
+from logging.handlers import RotatingFileHandler
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -32,7 +32,6 @@ def create_app(config_class=Config):
         app.register_blueprint(users)
         app.register_blueprint(posts)
         app.register_blueprint(main)
-        db.create_all()
 
     if not app.debug and not app.testing:
 
