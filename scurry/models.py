@@ -1,4 +1,5 @@
 from datetime import datetime
+from flask import current_app
 from scurry import db, login_manager
 from flask_login import UserMixin
 
