@@ -1,6 +1,7 @@
 from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from sqlalchemy import or_
+from datetime import datetime
 from flask_login import current_user, login_required
 from scurry import db
 from scurry.models import Post, User, PostShare
@@ -32,7 +33,7 @@ def underground():
     page = request.args.get('page', 1, type=int)
     shared_posts = Post.query.filter(Post.shares) #.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     private_posts = Post.query.filter_by(private=True)
-    posts = shared_posts.union(private_posts).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = shared_posts.union(private_posts).order_by(Post.date_shared.desc(), Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('underground.html', title="Underground Feed", postForm=postForm, posts=posts)
 
 @posts.route('/burrow', methods=['GET', 'POST'])
@@ -65,10 +66,13 @@ def like_action(post_id, action):
 def share_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author == current_user:
-        abort(404)
-    # new_post = Post(private=True, author=post.author, content=post.content)
+        flash('You can\'t share your own post', 'info')
+        return redirect(request.referrer)
+    if current_user.has_shared_post(post):
+        flash('You have already shared this post', 'info')
+        return redirect(request.referrer)
     current_user.share_post(post)
-    # db.session.add(post)
+    post.date_shared = datetime.now()
     db.session.commit()
     flash('Post has been shared', 'success')
     return redirect(url_for('posts.underground'))

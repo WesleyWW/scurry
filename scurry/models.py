@@ -25,6 +25,10 @@ class User(db.Model, UserMixin):
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
+    shared = db.relationship(
+        'PostShare',
+        foreign_keys='PostShare.sharer_id',
+        backref='sharer', lazy='dynamic')
 
     def share_post(self, post):
         if not self.has_shared_post(post):
@@ -61,14 +65,9 @@ class User(db.Model, UserMixin):
         foreign_keys='PostLike.user_id',
         backref='user', lazy='dynamic')
 
-    shared = db.relationship(
-        'PostShare',
-        foreign_keys='PostShare.sharer_id',
-        backref='sharer', lazy='dynamic')
-
-    def share_post(self, post):
-        share = PostShare(sharer_id=self.id, shared_post_id=post.id)
-        db.session.add(share)
+    # def share_post(self, post):
+    #     share = PostShare(sharer_id=self.id, shared_post_id=post.id)
+    #     db.session.add(share)
 
     def like_post(self, post):
         if not self.has_liked_post(post):
@@ -105,6 +104,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_shared = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     private = db.Column(db.Boolean, default=False, nullable=False)
     likes = db.relationship('PostLike', backref='post', lazy='dynamic')
