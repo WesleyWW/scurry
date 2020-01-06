@@ -101,6 +101,13 @@
                     </div>
                 </form>
             </div>
+
+        {% else %}
+            <div class="container" id="signup-card">
+                <h1>Sign Up Today</h1>
+                <a href="{{ url_for('users.register') }}"><button class="btn">Sign Up Here</button></a>
+                <p>Or go to <a href="{{ url_for('users.login') }}">login</a></p>
+            </div>
         {% endif %}
             {% block sidebar %}{% endblock %}
         </div>

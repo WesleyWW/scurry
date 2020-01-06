@@ -17,8 +17,10 @@ def index():
         db.session.commit()
         flash('Post Created!', 'success')
         return redirect(request.referrer)
-    
-    user = User.query.filter_by(username=current_user.username).first_or_404()
+    if current_user.is_authenticated:
+        user = User.query.filter_by(id=current_user.id).first_or_404()
+    else:
+        user = 'Null'
     page = request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(private=False).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('home.html', title='Home', posts=posts, user=user, postForm=postForm)

@@ -247,6 +247,15 @@ a:hover {
     padding: .5rem;
 }
 
+#signup-card {
+    margin-top: 100px;
+    background: var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 /* END SIDEBAR */
 
 /* FORMS */

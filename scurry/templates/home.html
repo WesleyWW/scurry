@@ -25,9 +25,6 @@
                      
                     <div class="post-body">
                         <p class="post-content">{{ post.content }}</p>
-                        {% for share in post.shares %}
-                            {{ share.sharer.username }}
-                        {% endfor %}
                         <div class="post-buttons">
                             {% if current_user.username == post.author.username %}
                                 <a href="{{ url_for('posts.update_post', post_id=post.id) }}" class="btn">Update</a>

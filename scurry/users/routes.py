@@ -47,9 +47,15 @@ def logout():
     return redirect(url_for('users.login'))
 
 # Get User Posts
-@users.route('/user/<string:username>')
+@users.route('/user/<string:username>', methods=['GET', 'POST'])
 def user_posts(username):
     postForm = PostForm()
+    if postForm.validate_on_submit():
+        post = Post(private=postForm.private.data, content=postForm.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Post Created!', 'success')
+        return redirect(request.referrer)
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user)\

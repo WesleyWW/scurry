@@ -33,9 +33,9 @@ def underground():
     page = request.args.get('page', 1, type=int)
     shared_posts = Post.query.filter(Post.shares) #.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     private_posts = Post.query.filter_by(private=True)
-    posts = shared_posts.union(private_posts).order_by(Post.date_shared.desc(), Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts = shared_posts.union(private_posts).order_by(Post.date_posted.desc(), Post.date_shared.desc()).paginate(page=page, per_page=5)
     return render_template('underground.html', title="Underground Feed", postForm=postForm, posts=posts)
-
+ 
 @posts.route('/burrow', methods=['GET', 'POST'])
 @login_required
 def burrow():
