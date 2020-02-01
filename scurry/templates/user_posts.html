@@ -14,7 +14,7 @@
                         
                         <p class="btn right">
                             <a href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}" ><ion-icon name="thumbs-up"></ion-icon></a>
-                            {{ post.likes.count() }}
+                            <p>Likes:</p>{{ post.likes.count() }}
                         </p>
                         <a href="{{ url_for('posts.share_post', post_id=post.id) }}" class="btn">
                             <ion-icon name="share-alt"></ion-icon>

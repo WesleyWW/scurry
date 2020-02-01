@@ -6,7 +6,6 @@ from scurry.posts.forms import PostForm
 
 main = Blueprint('main', __name__)
 
-
 @main.route('/')
 @main.route('/home', methods=['POST', 'GET'])
 def index():

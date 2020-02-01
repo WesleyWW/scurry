@@ -50,7 +50,8 @@ def burrow():
     posts = user.followed_posts().paginate(page=page, per_page=5)
     return render_template('burrow.html', postForm=postForm, title="My Burrow", posts=posts)
 
-@posts.route('/like/<int:post_id>/<action>')  
+@posts.route('/like/<int:post_id>/<action>')
+@login_required
 def like_action(post_id, action):
     post = Post.query.filter_by(id=post_id).first_or_404()
     if action == 'like':
