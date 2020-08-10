@@ -10,7 +10,7 @@
                         <img src="{{ url_for('static', filename='images/' + post.author.image_file) }}" alt="user photo" class="article-img">
                         <div class="post-metadata">
                             <a class="post-author" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
-                            <small>{{ post.date_posted }}</small>
+                            <small>{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
                             <p class="btn right">
                                 <a href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}" ><ion-icon name="thumbs-up"></ion-icon></a>
                                 {{ post.likes.count() }}
